@@ -1,12 +1,12 @@
-import json, requests, os
+import json, requests, os, base64
 from dotenv import load_dotenv
 
 load_dotenv()
 r = requests.session()
 
-test_cids = ["AnimatedInterestingSproutPrimeMe-UYNXXdaGm_5IyobZ", "DeliciousRealWatercressMoreCowbell-4d_s4wMgqDY0tubW"]
+# test_cids = ["AnimatedInterestingSproutPrimeMe-UYNXXdaGm_5IyobZ", "DeliciousRealWatercressMoreCowbell-4d_s4wMgqDY0tubW"]
 # test_cid = "NastyNaiveOysterOSsloth-pvt3cTngOPKyXWuf"
-TEST_AUTH_TOKEN = "isg4pa7sc1anbbctrn6pfs7ikl1wf8"
+# TEST_AUTH_TOKEN = "isg4pa7sc1anbbctrn6pfs7ikl1wf8"
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -86,12 +86,18 @@ def download_clips(clip_ids, client_id, token):
             clip_url += id
 
     clip_info = r.get(clip_url, headers=req_headers)
-    clip_info_all = json.loads(clip_info.text)["data"]
+
+    try:
+        clip_info_all = json.loads(clip_info.text)["data"]
+    except:
+        # print("")
+        pass
 
     for clip_info in clip_info_all:
         broadcaster_name = clip_info["broadcaster_name"]
         creator_name = clip_info["creator_name"]
         title = clip_info["title"]
+        title = base64.b64encode(title.encode('ascii')).decode('ascii')
         duration = str(clip_info["duration"])
         game = str(clip_info["game_id"])
         
@@ -100,11 +106,10 @@ def download_clips(clip_ids, client_id, token):
         clip_dl_url = clip_dl_url + ".mp4"
 
         clip_bytes = r.get(clip_dl_url, headers=req_headers)
-        file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + creator_name + ".mp4"
-
-        with open(f"./saved_clips/{file_name}", "wb") as saved_clip:
+        file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + creator_name
+        
+        with open(f"./saved_clips/{file_name}.mp4", "wb") as saved_clip:
             saved_clip.write(clip_bytes.content)
 
 # download_clip(test_cid, CLIENT_ID, TEST_AUTH_TOKEN)
-
-download_clips(test_cids, CLIENT_ID, TEST_AUTH_TOKEN)
+# download_clips(test_cids, CLIENT_ID, TEST_AUTH_TOKEN)
