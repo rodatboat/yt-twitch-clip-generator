@@ -2,6 +2,7 @@ __pycache__/
 edited_clips/
 montaged_clips/
 saved_clips/
+filtered_clips/
 transitions/
 temp.txt
 z.txt

@@ -70,8 +70,21 @@ def download_clip(clip_id, client_id, token):
     clip_bytes = r.get(clip_dl_url, headers=req_headers)
     file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + views + "_-" + creator_name
 
-    with open(f"./saved_clips/{file_name}.mp4", "wb") as saved_clip:
-        saved_clip.write(clip_bytes.content)
+    folder_path = f"{os.getcwd()}\\saved_clips\\"
+    found = False
+    for file in os.listdir(folder_path):
+        curr_file_name = file_name + ".mp4"
+        if file == curr_file_name:
+            found = True
+
+    try:
+        if not found:
+            with open(f"./saved_clips/{file_name}.mp4", "wb") as saved_clip:
+                saved_clip.write(clip_bytes.content)
+        else:
+            print("Clip already saved.")
+    except:
+        pass
 
 def download_clips(clip_ids, client_id, token):
     clip_url = f"https://api.twitch.tv/helix/clips"
@@ -79,13 +92,16 @@ def download_clips(clip_ids, client_id, token):
         "Authorization":f"Bearer {token}",
         "Client-Id":client_id
     }
+    clip_count = 0
     for index, id in enumerate(clip_ids):
-        if index == 0:
-            clip_url += "?id="
-            clip_url += id
-        else:
-            clip_url += "&id="
-            clip_url += id
+        clip_count+=1
+        if clip_count <= 100:
+            if index == 0:
+                clip_url += "?id="
+                clip_url += id
+            else:
+                clip_url += "&id="
+                clip_url += id
 
     clip_info = r.get(clip_url, headers=req_headers)
 
@@ -96,23 +112,41 @@ def download_clips(clip_ids, client_id, token):
         pass
 
     for clip_info in clip_info_all:
-        broadcaster_name = clip_info["broadcaster_name"]
-        creator_name = clip_info["creator_name"]
-        title = clip_info["title"]
-        title = base64.b64encode(title.encode('ascii')).decode('ascii')
-        duration = str(clip_info["duration"])
-        game = str(clip_info["game_id"])
-        views = str(clip_info["view_count"])
-        
+        try:
+            broadcaster_name = clip_info["broadcaster_name"]
+            creator_name = clip_info["creator_name"]
+            title = clip_info["title"]
+            title = base64.b64encode(title.encode('ascii')).decode('ascii')
+            duration = str(clip_info["duration"])
+            game = str(clip_info["game_id"])
+            views = str(clip_info["view_count"])
+            
 
-        clip_dl_url = clip_info["thumbnail_url"].split("-preview-")[0]
-        clip_dl_url = clip_dl_url + ".mp4"
+            clip_dl_url = clip_info["thumbnail_url"].split("-preview-")[0]
+            clip_dl_url = clip_dl_url + ".mp4"
 
-        clip_bytes = r.get(clip_dl_url, headers=req_headers)
-        file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + views + "_-" + creator_name
+            clip_bytes = r.get(clip_dl_url, headers=req_headers)
+            file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + views + "_-" + creator_name
 
-        with open(f"./saved_clips/{file_name}.mp4", "wb") as saved_clip:
-            saved_clip.write(clip_bytes.content)
+            folder_path = f"{os.getcwd()}\\saved_clips\\"
+            found = False
+            for file in os.listdir(folder_path):
+                curr_file_name = file_name + ".mp4"
+                if file == curr_file_name:
+                    found = True
+
+            try:
+                if not found:
+                    with open(f"./saved_clips/{file_name}.mp4", "wb") as saved_clip:
+                        saved_clip.write(clip_bytes.content)
+                else:
+                    print("Clip already saved.")
+            except:
+                print("Error saving clip.")
+                pass
+        except:
+                print("Error downloading clip.")
+                pass
 
 # download_clip(test_cid, CLIENT_ID, TEST_AUTH_TOKEN)
 # download_clips(test_cids, CLIENT_ID, TEST_AUTH_TOKEN)

@@ -18,7 +18,7 @@ def mark_clip(file_name):
     clip_title = base64.b64decode(clip_title).decode('ascii')
     clip_game = int(clip_info[2])
     clip_duration = float(clip_info[3])
-    clip_author = clip_info[4]
+    clip_author = clip_info[5]
 
     clip = mpy.VideoFileClip(f"./saved_clips/{file_name}.mp4").resize(height=video_height, width=video_width)  # .subclip(0,1)
 
@@ -57,7 +57,7 @@ def montage(clips=[], transition=None, max_duration=9999, title=""):
             clip_title = base64.b64decode(clip_title).decode('ascii')
             clip_game = int(clip_info[2])
             clip_duration = int(round(float(clip_info[3])))
-            clip_author = clip_info[4]
+            clip_author = clip_info[5]
 
             temp_clip = mpy.VideoFileClip(f"./edited_clips/{clip}.mp4")
 
@@ -73,7 +73,7 @@ def montage(clips=[], transition=None, max_duration=9999, title=""):
         today = str(date.today())
         title = f"Popular Clips {today}"
     final_montage  = mpy.concatenate_videoclips(montage_clips, method="compose")
-    final_montage.write_videofile(f"./montaged_clips/{title}.mp4", fps = 30, threads=8)
+    final_montage.write_videofile(f"./montaged_clips/{title}.mp4", fps = 30, threads=8, preset="veryslow")
 
 
 
