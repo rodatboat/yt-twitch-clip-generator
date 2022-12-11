@@ -75,18 +75,27 @@ def filter_clips(top = 20, maxDuration = 1099):
 
 def mark_all_clips(max_threads = 1):
     folder_path = f"{os.getcwd()}\\saved_clips\\"
+    edited_folder_path = f"{os.getcwd()}\\edited_clips\\"
 
     t_arr = []
     for file in os.listdir(folder_path):
-        if len(t_arr) < max_threads:
-            t1 = threading.Thread(target=mark_clip, args=(file,))
-            t_arr.append(t1)
-            t1.start()
-        else:
-            t_arr[0].join()
-            t_arr.pop(0)
+        found = False
+        for check_exists_file in os.listdir(edited_folder_path):
+            if file == check_exists_file:
+                found = True
+        if not found:
+            if len(t_arr) < max_threads:
+                t1 = threading.Thread(target=mark_clip, args=(file,))
+                t_arr.append(t1)
+                t1.start()
+            else:
+                t_arr[0].join()
+                t_arr.pop(0)
     for t in t_arr:
-        t.join()
+        try:
+            t.join()
+        except:
+            pass
 
 def create_montage(maxDuration = 1099):
     folder_path = f"{os.getcwd()}\\edited_clips\\"
@@ -98,8 +107,11 @@ def create_montage(maxDuration = 1099):
     montage(edited_clips, transition, max_duration = maxDuration)
 
 
+
+max_duration = 800
+
 allClips = gen_clips_list(game_count=14, clip_per_game=7, last_days=7)
 # dl_clips(allClips)
-# filter_clips(allClips, maxDuration=600)
-mark_all_clips()
+# filter_clips(allClips, maxDuration=max_duration)
+# mark_all_clips()
 create_montage()

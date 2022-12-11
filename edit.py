@@ -1,7 +1,7 @@
 import moviepy.editor as mpy
 from moviepy.editor import *
 from datetime import date
-import base64
+import base64, random
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -36,7 +36,8 @@ def mark_clip(file_name):
 
     final.write_videofile(f"./edited_clips/{file_name}.mp4", fps = 30, threads=8)
 
-def montage(clips=[], transition=None, max_duration=9999, title=""):
+def montage(clips=[], transition=None, max_duration=9999, title="", shuffleOrder = True):
+    print("Creating montage")
     video_height = 1080
     video_width = 1920
 
@@ -69,11 +70,16 @@ def montage(clips=[], transition=None, max_duration=9999, title=""):
             duration += clip_duration
         break
 
+    if shuffleOrder:
+        random.shuffle(montage_clips)
+
     if title == "":
         today = str(date.today())
         title = f"Popular Clips {today}"
     final_montage  = mpy.concatenate_videoclips(montage_clips, method="compose")
-    final_montage.write_videofile(f"./montaged_clips/{title}.mp4", fps = 30, threads=8, preset="veryslow")
+    final_montage.write_videofile(f"./montaged_clips/{title}.mp4", fps = 30, threads=8)
+
+    print("Montage Done!")
 
 
 
