@@ -58,17 +58,19 @@ def download_clip(clip_id, client_id, token):
     broadcaster_name = clip_info["broadcaster_name"]
     creator_name = clip_info["creator_name"]
     title = clip_info["title"]
+    title = base64.b64encode(title.encode('ascii')).decode('ascii')
     duration = str(clip_info["duration"])
     game = str(clip_info["game_id"])
+    views = str(clip_info["view_count"])
     
 
     clip_dl_url = clip_info["thumbnail_url"].split("-preview-")[0]
     clip_dl_url = clip_dl_url + ".mp4"
 
     clip_bytes = r.get(clip_dl_url, headers=req_headers)
-    file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + creator_name + ".mp4"
+    file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + views + "_-" + creator_name
 
-    with open(f"./saved_clips/{file_name}", "wb") as saved_clip:
+    with open(f"./saved_clips/{file_name}.mp4", "wb") as saved_clip:
         saved_clip.write(clip_bytes.content)
 
 def download_clips(clip_ids, client_id, token):
@@ -100,14 +102,15 @@ def download_clips(clip_ids, client_id, token):
         title = base64.b64encode(title.encode('ascii')).decode('ascii')
         duration = str(clip_info["duration"])
         game = str(clip_info["game_id"])
+        views = str(clip_info["view_count"])
         
 
         clip_dl_url = clip_info["thumbnail_url"].split("-preview-")[0]
         clip_dl_url = clip_dl_url + ".mp4"
 
         clip_bytes = r.get(clip_dl_url, headers=req_headers)
-        file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + creator_name
-        
+        file_name = broadcaster_name + "_-" + title + "_-" + game + "_-" + duration + "_-" + views + "_-" + creator_name
+
         with open(f"./saved_clips/{file_name}.mp4", "wb") as saved_clip:
             saved_clip.write(clip_bytes.content)
 

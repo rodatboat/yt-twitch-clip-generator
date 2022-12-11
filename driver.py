@@ -12,7 +12,7 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
 
-def dl_clips(game_count = 5, clip_per_game = 5, last_days = 7):
+def get_pop_clips(game_count = 5, clip_per_game = 5, last_days = 7):
     popular_clips = fetch_popular_clips(
     top_games(CLIENT_ID, TEST_AUTH_TOKEN, count=game_count), 
     CLIENT_ID, 
@@ -21,6 +21,9 @@ def dl_clips(game_count = 5, clip_per_game = 5, last_days = 7):
     lastDays=last_days
     )
 
+    return popular_clips
+
+def dl_clips(popular_clips):
     download_clips(popular_clips, CLIENT_ID, TEST_AUTH_TOKEN)
 
 def mark_all_clips(max_threads = 1):
@@ -40,10 +43,13 @@ def mark_all_clips(max_threads = 1):
         
 mark_all_clips()
 
-# folder_path = f"{os.getcwd()}\\edited_clips\\"
-# edited_clips = []
-# for file in os.listdir(folder_path):
-#     edited_clips.append(file)
-    
-# transition = "transition_tvstatic.mp4"
-# montage(edited_clips, transition, max_duration = 600)
+def create_montage():
+    folder_path = f"{os.getcwd()}\\edited_clips\\"
+    edited_clips = []
+    for file in os.listdir(folder_path):
+        edited_clips.append(file)
+        
+    transition = "transition_tvstatic.mp4"
+    montage(edited_clips, transition, max_duration = 1000)
+
+create_montage()
