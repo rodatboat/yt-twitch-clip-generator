@@ -46,24 +46,6 @@ def montage(clips=[], transition=None, max_duration=9999, title="", shuffleOrder
     # Load transition file
     if transition != None:
         transition = mpy.VideoFileClip(f"./transitions/{transition}").subclip(0,.5).resize(height=video_height, width=video_width).volumex(.4)
-
-    top_streamers = {
-        "top_streamers":[],
-        "all_streamers":[]
-    }
-    # Get top 5
-    top_counter = 0
-    for clip in clips:
-        streamer_name = clip.split(".mp4")[0]
-        streamer_name = clip.split("_-")
-        streamer_name = streamer_name[0]
-        if top_counter < 5:
-            if streamer_name not in top_streamers["all_streamers"]:
-                top_streamers["all_streamers"].append(streamer_name)
-        if streamer_name not in top_streamers["all_streamers"]:
-            top_streamers["all_streamers"].append(streamer_name)
-        top_counter+=1
-
     
     # Shuffle clips before adding transitions
     if shuffleOrder:
@@ -96,10 +78,6 @@ def montage(clips=[], transition=None, max_duration=9999, title="", shuffleOrder
     if title == "":
         today = str(datetime.utcnow()).split(".")[0].replace(":","-")
         title = f"Popular Clips {today}"
-
-    json_object = json.dumps(top_streamers, indent=4)
-    with open(f"./montaged_clips/{title}.json", "w") as outfile:
-        outfile.write(json_object)
 
     final_montage  = mpy.concatenate_videoclips(montage_clips, method="compose")
     final_montage.write_videofile(f"./montaged_clips/{title}.mp4", fps = 30, threads=8)
