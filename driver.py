@@ -91,9 +91,14 @@ def mark_all_clips(max_threads = 1):
             else:
                 t_arr[0].join()
                 t_arr.pop(0)
+
+                t1 = threading.Thread(target=mark_clip, args=(file,))
+                t_arr.append(t1)
+                t1.start()
     for t in t_arr:
         try:
             t.join()
+            t_arr.pop(0)
         except:
             pass
 
@@ -108,10 +113,10 @@ def create_montage(maxDuration = 1099):
 
 
 
-max_duration = 800
+max_duration = 600
 
-allClips = gen_clips_list(game_count=14, clip_per_game=7, last_days=7)
-# dl_clips(allClips)
-# filter_clips(allClips, maxDuration=max_duration)
-# mark_all_clips()
+allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=7)
+dl_clips(allClips)
+filter_clips(maxDuration=max_duration)
+mark_all_clips()
 create_montage()

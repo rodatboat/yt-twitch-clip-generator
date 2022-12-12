@@ -1,7 +1,7 @@
 import moviepy.editor as mpy
 from moviepy.editor import *
-from datetime import date
-import base64, random
+from datetime import *
+import base64, random, json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -43,9 +43,29 @@ def montage(clips=[], transition=None, max_duration=9999, title="", shuffleOrder
 
     duration = 0
     montage_clips = []
+    # Load transition file
     if transition != None:
         transition = mpy.VideoFileClip(f"./transitions/{transition}").subclip(0,.5).resize(height=video_height, width=video_width).volumex(.4)
+
+    top_streamers = {
+        "top_streamers":[],
+        "all_streamers":[]
+    }
+    # Get top 5
+    top_counter = 0
+    for clip in clips:
+        streamer_name = clip.split(".mp4")[0]
+        streamer_name = clip.split("_-")
+        streamer_name = clip_info[0]
+        if top_counter < 5:
+            top_streamers["top_streamers"].append(streamer_name)
+        top_streamers["all_streamers"].append(streamer_name)
+
     
+    # Shuffle clips before adding transitions
+    if shuffleOrder:
+        random.shuffle(clips)
+
     clip_count = 0
     while duration <= max_duration:
         for clip in clips:
@@ -70,12 +90,14 @@ def montage(clips=[], transition=None, max_duration=9999, title="", shuffleOrder
             duration += clip_duration
         break
 
-    if shuffleOrder:
-        random.shuffle(montage_clips)
-
     if title == "":
-        today = str(date.today())
+        today = str(datetime.utcnow()).split(".")[0].replace(":","-")
         title = f"Popular Clips {today}"
+
+    json_object = json.dumps(top_streamers, indent=4)
+    with open(f"./montaged_clips/{title}.json", "w") as outfile:
+        outfile.write(json_object)
+
     final_montage  = mpy.concatenate_videoclips(montage_clips, method="compose")
     final_montage.write_videofile(f"./montaged_clips/{title}.mp4", fps = 30, threads=8)
 
