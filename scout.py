@@ -44,6 +44,7 @@ def fetch_popular_clips(top_games_ids, client_id, token, lastDays = 0, language 
             "first":count
         }
         clips_info = r.get(top_clips_url, headers=req_headers, params=req_params)
+        print(clips_info.text)
         clips_info = json.loads(clips_info.text)["data"]
 
         for clip_id in clips_info:

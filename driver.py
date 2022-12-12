@@ -12,14 +12,23 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
 
-def gen_clips_list(game_count = 5, clip_per_game = 5, last_days = 7):
-    popular_clips = fetch_popular_clips(
-    top_games(CLIENT_ID, TEST_AUTH_TOKEN, count=game_count), 
-    CLIENT_ID, 
-    TEST_AUTH_TOKEN,
-    count=clip_per_game,
-    lastDays=last_days
-    )
+def gen_clips_list(game_count = 5, clip_per_game = 5, last_days = 7, byGame = False, game_id = "-1"):
+    if byGame and game_id != "-1":
+        popular_clips = fetch_popular_clips(
+        game_id, 
+        CLIENT_ID, 
+        TEST_AUTH_TOKEN,
+        count=clip_per_game,
+        lastDays=last_days
+        )
+    else:
+        popular_clips = fetch_popular_clips(
+        top_games(CLIENT_ID, TEST_AUTH_TOKEN, count=game_count), 
+        CLIENT_ID, 
+        TEST_AUTH_TOKEN,
+        count=clip_per_game,
+        lastDays=last_days
+        )
 
     return popular_clips
 
@@ -112,10 +121,12 @@ def create_montage(maxDuration = 1099):
     montage(edited_clips, transition, max_duration = maxDuration)
 
 
-
+# 600 daily, 1000 weekly
 max_duration = 600
 
-allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=7)
+# game_count = 20, cpg = 5, ld = 7 weekly
+# gc = 1, cpg = 20, ld = 1 daily
+allClips = gen_clips_list(game_count=20, clip_per_game=20, last_days=1, byGame=True, game_id="515025")
 dl_clips(allClips)
 filter_clips(maxDuration=max_duration)
 mark_all_clips()

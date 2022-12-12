@@ -56,10 +56,13 @@ def montage(clips=[], transition=None, max_duration=9999, title="", shuffleOrder
     for clip in clips:
         streamer_name = clip.split(".mp4")[0]
         streamer_name = clip.split("_-")
-        streamer_name = clip_info[0]
+        streamer_name = streamer_name[0]
         if top_counter < 5:
-            top_streamers["top_streamers"].append(streamer_name)
-        top_streamers["all_streamers"].append(streamer_name)
+            if streamer_name not in top_streamers["all_streamers"]:
+                top_streamers["all_streamers"].append(streamer_name)
+        if streamer_name not in top_streamers["all_streamers"]:
+            top_streamers["all_streamers"].append(streamer_name)
+        top_counter+=1
 
     
     # Shuffle clips before adding transitions
