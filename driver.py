@@ -37,50 +37,42 @@ def dl_clips(popular_clips):
 
 def filter_clips(top = 20, maxDuration = 1099):
     folder_path = f"{os.getcwd()}\\saved_clips\\"
-    best_clips = []
+    most_viewed_clips = []
     for file in os.listdir(folder_path):
         file_name = file.split(".mp4")[0]
         clip_info = file_name.split("_-")
         clip_views = round(int(clip_info[4]))
-        best_clips.append((file, clip_views))
-        # clip_duration = int(round(float(clip_info[3])))
-    ordered_clips_temp = []
-    for (curr_file, curr_file_views) in best_clips:
-        if len(ordered_clips_temp) == 0:
-            ordered_clips_temp.append((curr_file, curr_file_views))
-        else:
-            inserted = False
-            for (ind, x) in enumerate(ordered_clips_temp):
-                file, file_views = x
-                if curr_file_views >= file_views:
-                    ordered_clips_temp.insert(ind, (curr_file, curr_file_views))
-                    inserted = True
-                    break
-            if not inserted:
-                ordered_clips_temp.append((curr_file, curr_file_views))
+        most_viewed_clips.append((file, clip_views))
+
+    def takeSecond(elem):
+        return elem[1]
+
+    most_viewed_clips.sort(key=takeSecond)
+    most_viewed_clips = reversed(most_viewed_clips)
+
+    clips_kept = []
 
     total_duration = 0
-    for (ind, x) in enumerate(ordered_clips_temp):
-        file, views = x
-        if total_duration <= maxDuration:
+    while total_duration <= maxDuration:
+        for (file, views) in most_viewed_clips:
+            if total_duration > maxDuration:
+                break
             file_name = file.split(".mp4")[0]
             clip_info = file_name.split("_-")
             clip_duration = float(clip_info[3])
-            total_duration += clip_duration
-        else:
-            ordered_clips_temp.pop(ind)
-
-    print(f"Total Duration: {total_duration}")
-    ordered_clips = []
-    for (file, views) in ordered_clips_temp:
-        ordered_clips.append(file)
+            
+            clips_kept.append(file)
+            total_duration+=clip_duration
+        break
         
     filtered_path = f"{os.getcwd()}\\filtered_clips\\"
     for file in os.listdir(folder_path):
-        if file not in ordered_clips:
+        if file not in clips_kept:
             shutil.move(folder_path+file, filtered_path+file)
         else:
             pass
+    print(f"Total Duration: {total_duration}")
+        
 
 def mark_all_clips(max_threads = 1):
     folder_path = f"{os.getcwd()}\\saved_clips\\"
@@ -128,8 +120,9 @@ game_id = [515025]
 # game_count = 20, cpg = 5, ld = 7 weekly
 # gc = 1, cpg = 100, ld = 1 daily
 # allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=1, byGame=True, game_id=game_id)
-allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=1)
-dl_clips(allClips)
+
+# allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=1.5)
+# dl_clips(allClips)
 filter_clips(maxDuration=max_duration)
 mark_all_clips()
 create_montage()
