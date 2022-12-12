@@ -59,26 +59,33 @@ def fetch_titledesc(weekly=False, monthly=False, daily=False, isGame=False, game
 
     title = ""
     if isGame:
-        title+=game
-        title+= " MOST POPULAR Twitch Clips of The " + occurence
+        title+= f"MOST POPULAR {game} Twitch Clips of The " + occurence
     else:
         # title+="Twitch"
         title+= "TWITCH FAILS AND HIGHLIGHTS of The " + occurence + "! w/ CHAT"
 
-    title += " ("
-    for s in streamers["top_streamers"]:
-        title += f"#{s},"
-    title += "...) #highlights"
+    # title += " ("
+    # for s in streamers["top_streamers"]:
+    #     title += f"#{s},"
+    # title += "...) #highlights"
 
     description = ""
     description += title + "\n"
+    description += "\n\n"
+    description += "Submit Clips:\n"
+    description += "https://forms.gle/XugXAAb8KuQusMfw6\n\n"
     description += "Credits:" + "\n"
     
     for s in streamers["all_streamers"]:
         description += f"twitch.tv/{s}\n"
     
+    description += "___________________________________________\n"
+    description += f"That's it for this video guys, if you liked {title}, hit that like button, if you want to see more videos like this, subscribe. Thank you so much for staying till the end of the video. Stay cool, and we will see you, in the next one.\n"
     description += "___________________________________________"
-    description += f"That's it for this video guys, if you liked {title}, hit that like button, if you want to see more videos like this, subscribe. Thank you so much for staying till the end of the video. Stay cool, and we will see you, in the next one."
-    description += "___________________________________________"
+
+    with open("./montaged_clips/description.txt", "w") as file:
+        file.write(title)
+        file.write("\n")
+        file.write(description)
 
     return (title, description)
