@@ -119,18 +119,18 @@ game_id = [515025]
 
 # game_count = 20, cpg = 5, ld = 7 weekly
 # gc = 1, cpg = 100, ld = 1 daily
-# allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=1, byGame=True, game_id=game_id)
+# allClips = gen_clips_list(game_count=1, clip_per_game=100, last_days=1, byGame=True, game_id=game_id)
 
-# allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=1.5)
+# # allClips = gen_clips_list(game_count=20, clip_per_game=5, last_days=1.5)
 # dl_clips(allClips)
-filter_clips(maxDuration=max_duration)
-mark_all_clips()
-create_montage()
+# filter_clips(maxDuration=max_duration)
+# mark_all_clips()
+# create_montage()
 
 # 
 fetch_title_streamers()
-# title, desc = fetch_titledesc(weekly=False, monthly=False, daily=True, isGame=True, game="Overwatch 2")
-title, desc = fetch_titledesc(weekly=False, monthly=False, daily=True)
+title, desc = fetch_titledesc(weekly=False, monthly=False, daily=True, isGame=True, game="Overwatch 2")
+# title, desc = fetch_titledesc(weekly=False, monthly=False, daily=True)
 
 
 print(title, desc)

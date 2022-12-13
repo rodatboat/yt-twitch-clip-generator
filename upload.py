@@ -45,6 +45,10 @@ def fetch_title_streamers():
     with open(f"./montaged_clips/{title}.json", "w") as outfile:
         outfile.write(json_object)
 
+def get_title_index():
+    title_index = json.load(open("./montaged_clips/tracker.json", "r"))
+    return title_index
+
 def fetch_titledesc(weekly=False, monthly=False, daily=False, isGame=False, game=""):
     fetch_title_streamers()
     streamers = json.load(open("./montaged_clips/description.json", "r"))
